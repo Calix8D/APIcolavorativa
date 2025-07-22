@@ -22,14 +22,14 @@
   }
 
   .container {
-    max-width: 640px;
-    margin: 40px auto;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 24px;
-    border-radius: 12px;
-    border: 2px solid #fff;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-  }
+  max-width: 1000px; 
+  margin: 50px auto;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-radius: 20px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+}
 
   h1 {
     font-size: 1.8rem;
@@ -50,25 +50,25 @@
   }
 
   .form-control {
-    border-radius: 6px;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    border: 1px solid #ccc;
-  }
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-size: 1.2rem; /* texto más grande */
+  padding: 14px 12px; /* más alto */
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
 
   .form-control::placeholder {
-    color: #ddd;
-  }
+  color: #ccc;
+}
 
   button[type="submit"] {
     width: 100%;
-    font-size: 1rem;
-    padding: 10px;
+    font-size: 1.1rem;
+    padding: 12px;
     background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     color: #fff;
     text-shadow: 0 0 5px #fff;
     animation: btnGlow 4s linear infinite;
@@ -92,10 +92,10 @@
   }
 
   .table {
-    margin-top: 20px;
-    font-size: 0.95rem;
+    margin-top: 30px;
+    font-size: 1rem;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     color: #fff;
   }
@@ -110,6 +110,43 @@
     vertical-align: middle;
     border-color: rgba(255, 255, 255, 0.2);
   }
+
+  /* Botones con gradiente animado */
+.btn-gradient {
+  background: linear-gradient(270deg, #ff00ff, #00ffff, #ff00ff);
+  background-size: 400% 400%;
+  animation: gradientShift 6s ease infinite;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  text-shadow: 0 0 5px #fff;
+  font-size: 1.1rem;
+  padding: 14px;
+  transition: transform 0.3s ease;
+}
+
+.btn-gradient:hover {
+  transform: scale(1.05);
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Responsive para móvil */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .form-control, .btn-gradient {
+    font-size: 1rem;
+    padding: 12px;
+  }
+}
+
 
   .btn-warning, .btn-danger {
     font-size: 0.8rem;
@@ -152,22 +189,45 @@
   <p id="modoMensaje" style="color: rgb(10, 10, 238); font-weight: bold;"></p>
   <div class="container">
     <h1>Gestión de Usuarios</h1>
+    
+    <!--Barra de busqueda-->
+    <div class="row mb-4">
+  <div class="col-md-4">
+    <input type="text" id="filtroNombre" class="form-control" placeholder="Buscar por nombre">
+  </div>
+  <div class="col-md-4">
+    <input type="text" id="filtroApellido" class="form-control" placeholder="Buscar por apellido">
+  </div>
+  <div class="col-md-4">
+    <select id="filtroSexo" class="form-control">
+      <option value="">Todos los géneros</option>
+      <option value="Masculino">Masculino</option>
+      <option value="Femenino">Femenino</option>
+    </select>
+  </div>
+</div>
 
-    <form id="usuarioForm">
-      <input type="hidden" id="id">
-      <input type="text" class="form-control" id="nombre" placeholder="Nombre" required>
-      <input type="text" class="form-control" id="apellido" placeholder="Apellido" required>
-      <input type="email" class="form-control" id="email" placeholder="Email" required>
-      <select class="form-control" id="sexo">
+   <form id="usuarioForm">
+  <input type="hidden" id="id">
+  <div class="row g-3">
+    <!-- Columna Izquierda -->
+    <div class="col-md-6">
+      <input type="text" class="form-control form-control-lg" id="nombre" placeholder="Nombre" required>
+      <input type="text" class="form-control form-control-lg" id="apellido" placeholder="Apellido" required>
+      <input type="email" class="form-control form-control-lg" id="email" placeholder="Email" required>
+    </div>
+
+    <!-- Columna Derecha -->
+    <div class="col-md-6">
+      <select class="form-control form-control-lg mb-3" id="sexo">
         <option value="Masculino">Masculino</option>
         <option value="Femenino">Femenino</option>
       </select>
-      <button type="submit" class="btn btn-dark mt-2">Guardar</button>
-      <button type="submit" class="btn btn-dark mt-2" onclick="location.reload()">Terminar Modo Edición</button>
-
-
-
-    </form>
+      <button type="submit" class="btn btn-gradient w-100 mb-2">Guardar</button>
+      <button type="button" class="btn btn-gradient w-100" onclick="location.reload()">Terminar Modo Edición</button>
+    </div>
+  </div>
+</form>
 
 
     <table class="table table-bordered" id="usuariosTable">
@@ -189,30 +249,63 @@
     const form = document.getElementById('usuarioForm');
     const tableBody = document.querySelector('#usuariosTable tbody');
 
+
+   <!--Scrip para incluir el filtro-->
+
+    const filtroNombre = document.getElementById('filtroNombre');
+const filtroApellido = document.getElementById('filtroApellido');
+const filtroSexo = document.getElementById('filtroSexo');
+
+filtroNombre.addEventListener('input', filtrarUsuarios);
+filtroApellido.addEventListener('input', filtrarUsuarios);
+filtroSexo.addEventListener('change', filtrarUsuarios);
+
+let listaUsuarios = [];
+
+function filtrarUsuarios() {
+  const nombre = filtroNombre.value.toLowerCase();
+  const apellido = filtroApellido.value.toLowerCase();
+  const sexo = filtroSexo.value;
+
+  const filtrados = listaUsuarios.filter(u =>
+    u.nombre.toLowerCase().includes(nombre) &&
+    u.apellido.toLowerCase().includes(apellido) &&
+    (sexo === "" || u.sexo === sexo)
+  );
+
+  renderizarTabla(filtrados);
+}
+
+
     function cargarUsuarios() {
-      fetch('/api/usuarios')
-        .then(res => res.json())
-        .then(data => {
-          tableBody.innerHTML = '';
-          data.data.forEach(usuario => {
-            const fila = `
-              <tr>
-                <td>${usuario.id}</td>
-                <td>${usuario.nombre}</td>
-                <td>${usuario.apellido}</td>
-                <td>${usuario.email}</td>
-                <td>${usuario.sexo}</td>
-                <td>
-                  <button class="btn btn-warning" onclick="editarUsuario(${usuario.id}, '${usuario.nombre}', '${usuario.apellido}', '${usuario.email}', '${usuario.sexo}')">Editar</button>
-                  <button class="btn btn-danger" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
-                  
-                </td>
-              </tr>
-            `;
-            tableBody.innerHTML += fila;
-          });
-        });
-    }
+  fetch('/api/usuarios')
+    .then(res => res.json())
+    .then(data => {
+      listaUsuarios = data.data; // Guardamos todos los usuarios
+      renderizarTabla(listaUsuarios);
+    });
+}
+
+    function renderizarTabla(usuarios) {
+  tableBody.innerHTML = '';
+  usuarios.forEach(usuario => {
+    const fila = `
+      <tr>
+        <td>${usuario.id}</td>
+        <td>${usuario.nombre}</td>
+        <td>${usuario.apellido}</td>
+        <td>${usuario.email}</td>
+        <td>${usuario.sexo}</td>
+        <td>
+          <button class="btn btn-warning" onclick="editarUsuario(${usuario.id}, '${usuario.nombre}', '${usuario.apellido}', '${usuario.email}', '${usuario.sexo}')">Editar</button>
+          <button class="btn btn-danger" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
+        </td>
+      </tr>
+    `;
+    tableBody.innerHTML += fila;
+  });
+}
+
 
     form.addEventListener('submit', e => {
       e.preventDefault();

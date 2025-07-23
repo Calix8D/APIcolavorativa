@@ -187,10 +187,9 @@
     animation: neonGlow 2s ease-in-out infinite alternate;
   }
 </style>
-<!-- scrip excel -->
-
+<!-- script excel -->
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-<!-- jsPDF y autoTable para exportar a PDF -->
+<!-- script PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
@@ -222,9 +221,16 @@
   <input type="hidden" id="id">
   <div class="row g-3">
 
-    <!-- Boton para exportar excel -->
-    <button class="btn btn-outline-light mb-3" onclick="exportarExcel()">Exportar a Excel</button>
-    <button class="btn btn-outline-light mb-3 ms-2" onclick="exportarPDF()">Exportar a PDF</button>
+   <!-- Botones de exportación -->
+<div class="row mb-3">
+  <div class="col-md-6">
+    <button type="button" class="btn btn-outline-light w-100" onclick="exportarExcel()">Exportar a Excel</button>
+  </div>
+  <div class="col-md-6">
+    <button type="button" class="btn btn-outline-light w-100" onclick="exportarPDF()">Exportar a PDF</button>
+  </div>
+</div>
+
 
 
     <!-- Columna Izquierda -->
@@ -241,7 +247,8 @@
         <option value="Femenino">Femenino</option>
       </select>
       <button type="submit" class="btn btn-gradient w-100 mb-2">Guardar</button>
-      <button type="button" class="btn btn-gradient w-100" onclick="location.reload()">Terminar Modo Edición</button>
+      
+
     </div>
   </div>
 </form>
@@ -279,6 +286,7 @@ filtroApellido.addEventListener('input', filtrarUsuarios);
 filtroSexo.addEventListener('change', filtrarUsuarios);
 
 let listaUsuarios = [];
+let enModoEdicion = false;
 
 
 function filtrarUsuarios() {
@@ -324,10 +332,12 @@ function filtrarUsuarios() {
     tableBody.innerHTML += fila;
   });
 }
-
-
-    form.addEventListener('submit', e => {
+ form.addEventListener('submit', e => {
       e.preventDefault();
+        if (enModoEdicion && !form.id.value) {
+    Swal.fire('Modo edición activo', 'Termina la edición antes de registrar un nuevo usuario.', 'warning');
+    return;
+  }
       const datos = {
         id: form.id.value,
         nombre: form.nombre.value,
@@ -338,29 +348,38 @@ function filtrarUsuarios() {
       const method = datos.id ? 'PUT' : 'POST';
       const url = datos.id ? `/api/usuarios/${datos.id}` : '/api/usuarios';
 
-      fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-      }).then(res => res.json())
-        .then(() => {
-          form.reset();
-          cargarUsuarios();
-          Swal.fire('¡Guardado!', 'Usuario registrado o actualizado correctamente.', 'success');
-
-        });
+  fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(datos)
+  }).then(res => res.json())
+    .then(() => {
+      form.reset();
+      form.id.value = '';           
+      enModoEdicion = false;       
+      document.getElementById('modoMensaje').textContent = ''; // Limpiar mensaje
+      cargarUsuarios();
+      Swal.fire('¡Guardado!', 'Usuario registrado o actualizado correctamente.', 'success');
     });
+});
 
-function editarUsuario(id, nombre, apellido, email, sexo) {
+async function editarUsuario(id, nombre, apellido, email, sexo) {
+  
   form.id.value = id;
   form.nombre.value = nombre;
   form.apellido.value = apellido;
   form.email.value = email;
   form.sexo.value = sexo;
 
-  // Mostrar mensaje de modo edición
+  // Modo edición
   document.getElementById('modoMensaje').textContent = 'Modo editor activado';
-}
+    Swal.fire({
+    icon: 'info',
+    title: 'Modo editor activado',
+    text: '.',
+    confirmButtonColor: '#3085d6'});
+    }
+
 
 
     async function eliminarUsuario(id) {
@@ -400,15 +419,12 @@ async function exportarPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  // Título
   doc.setFontSize(18);
-  doc.text("Listado de Usuarios", 14, 15);
-
-  // Encabezados y datos
+  doc.text("Lista de Usuarios", 14, 15);
   const headers = [["ID", "Nombre", "Apellido", "Email", "Sexo"]];
   const data = listaUsuarios.map(u => [u.id, u.nombre, u.apellido, u.email, u.sexo]);
 
-  // Generar tabla
+  // Tabla
   doc.autoTable({
     head: headers,
     body: data,
@@ -422,6 +438,8 @@ async function exportarPDF() {
 }
 
     cargarUsuarios();
+
+
   </script>
 </body>
 </html>

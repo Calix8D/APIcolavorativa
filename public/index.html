@@ -193,7 +193,7 @@
 
 </head>
 <body>
-  <p id="modoMensaje" style="color: rgb(10, 10, 238); font-weight: bold;"></p>
+  <p id="modoMensaje" style="color: rgb(0, 0, 0); font-weight: bold;"></p>
   <div class="container">
     <h1>API de Usuarios</h1>
     
@@ -294,7 +294,7 @@ function filtrarUsuarios() {
   fetch('/api/usuarios')
     .then(res => res.json())
     .then(data => {
-      listaUsuarios = data.data; // Guardamos todos los usuarios
+      listaUsuarios = data.data;
       renderizarTabla(listaUsuarios);
     });
 }

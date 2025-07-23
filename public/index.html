@@ -190,6 +190,10 @@
 <!-- scrip excel -->
 
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<!-- jsPDF y autoTable para exportar a PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
 
 </head>
 <body>
@@ -220,6 +224,8 @@
 
     <!-- Boton para exportar excel -->
     <button class="btn btn-outline-light mb-3" onclick="exportarExcel()">Exportar a Excel</button>
+    <button class="btn btn-outline-light mb-3 ms-2" onclick="exportarPDF()">Exportar a PDF</button>
+
 
     <!-- Columna Izquierda -->
     <div class="col-md-6">
@@ -390,6 +396,30 @@ function editarUsuario(id, nombre, apellido, email, sexo) {
   XLSX.writeFile(wb, "usuarios.xlsx");
 }
 
+async function exportarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Título
+  doc.setFontSize(18);
+  doc.text("Listado de Usuarios", 14, 15);
+
+  // Encabezados y datos
+  const headers = [["ID", "Nombre", "Apellido", "Email", "Sexo"]];
+  const data = listaUsuarios.map(u => [u.id, u.nombre, u.apellido, u.email, u.sexo]);
+
+  // Generar tabla
+  doc.autoTable({
+    head: headers,
+    body: data,
+    startY: 25,
+    styles: { fontSize: 10 },
+    headStyles: { fillColor: [0, 153, 255] }
+  });
+
+  // Guardar archivo
+  doc.save("usuarios.pdf");
+}
 
     cargarUsuarios();
   </script>
